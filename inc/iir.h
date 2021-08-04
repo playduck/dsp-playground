@@ -2,6 +2,14 @@
 #define IIR_H
 #include <math.h>
 
+#ifndef M_PI
+#define M_PI (3.1415926535897)
+#endif
+
+#ifndef M_SQRT2
+#define M_SQRT2 (1.41421356237)
+#endif
+
 typedef enum
 {
     lowpass,
