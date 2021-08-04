@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "*.asc": "spice",
+        "pipeline.h": "c",
+        "iir.h": "c",
+        "stdio.h": "c"
+    }
+}
