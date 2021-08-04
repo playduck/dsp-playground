@@ -1,6 +1,6 @@
 #include "iir.h"
 
-void biquad_filter(float *s, biquad_t *b)
+inline void biquad_filter(float *s, biquad_t *b)
 {
     float out = *s * b->a[0] + b->z[1];
     b->z[1] = (*s * b->a[1]) + (b->z[2] - b->b[1] * out);
