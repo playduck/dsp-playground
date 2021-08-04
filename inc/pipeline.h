@@ -1,4 +1,4 @@
-// #ifndef PIPELINE_H
+#ifndef PIPELINE_H
 #define PIPELINE_H
 
 #include <stdint.h>
@@ -7,6 +7,11 @@
 #include "iir.h"
 #include "gate.h"
 
+typedef enum {
+	CHANNEL_ONE,
+	CHANNEL_TWO,
+} channel_t;
+
 void initilize(int);
-void process_sample(int16_t *, int16_t *);
-// #endif
+void process_sample(channel_t, int16_t *, int16_t *);
+#endif
