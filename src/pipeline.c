@@ -27,6 +27,6 @@ void process_sample(int16_t *sample1, int16_t *sample2)
     biquad_filter(&s1, filters);
     biquad_filter(&s2, filters + 1);
 
-    *sample1 = (int16_t)roundf(s2 * INT16_MAX);
+    *sample1 = (int16_t)roundf(s1 * INT16_MAX);
     *sample2 = (int16_t)roundf(s2 * INT16_MAX);
 }

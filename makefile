@@ -1,41 +1,51 @@
-TARGET_EXEC ?= a.out
+# path macros
+BIN_PATH := bin
+OBJ_PATH := obj
+SRC_PATH := src
+INC_PATH := inc
 
-BUILD_DIR ?= ./build
-SRC_DIRS ?= ./src
+# tool macros
+CC := gcc
+CCFLAGS := -Wall -Wextra -fPIC -O3 -I $(INC_PATH)
+CCOBJFLAGS := $(CCFLAGS) -c
 
-SRCS := $(shell find $(SRC_DIRS) -name *.cpp -or -name *.c -or -name *.s)
-OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
-DEPS := $(OBJS:.o=.d)
+# compile macros
+TARGET_NAME := main.so
+TARGET := $(BIN_PATH)/$(TARGET_NAME)
 
-INC_DIRS := $(shell find $(SRC_DIRS) -type d)
-INC_FLAGS := $(addprefix -I,$(INC_DIRS))
+# src files & obj files
+SRC := $(foreach x, $(SRC_PATH), $(wildcard $(addprefix $(x)/*,.c*)))
+OBJ := $(addprefix $(OBJ_PATH)/, $(addsuffix .so, $(notdir $(basename $(SRC)))))
 
-CPPFLAGS ?= $(INC_FLAGS) -MMD -MP
+# clean files list
+DISTCLEAN_LIST := $(OBJ)
+CLEAN_LIST := $(TARGET) \
+			  $(DISTCLEAN_LIST)
 
-$(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
-	$(CC) $(OBJS) -o $@ $(LDFLAGS)
+# default rule
+default: makedir all
 
-# assembly
-$(BUILD_DIR)/%.s.o: %.s
-	$(MKDIR_P) $(dir $@)
-	$(AS) $(ASFLAGS) -c $< -o $@
+# non-phony targets
+$(TARGET): $(OBJ)
+	$(CC) $(CCFLAGS) -shared -o $@ $(OBJ)
 
-# c source
-$(BUILD_DIR)/%.c.o: %.c
-	$(MKDIR_P) $(dir $@)
-	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
+$(OBJ_PATH)/%.so: $(SRC_PATH)/%.c*
+	$(CC) $(CCOBJFLAGS) -o $@ $<
 
-# c++ source
-$(BUILD_DIR)/%.cpp.o: %.cpp
-	$(MKDIR_P) $(dir $@)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+# phony rules
+.PHONY: makedir
+makedir:
+	@mkdir -p $(BIN_PATH) $(OBJ_PATH) $(DBG_PATH)
 
+.PHONY: all
+all: $(TARGET)
 
 .PHONY: clean
-
 clean:
-	$(RM) -r $(BUILD_DIR)
+	@echo CLEAN $(CLEAN_LIST)
+	@rm -f $(CLEAN_LIST)
 
--include $(DEPS)
-
-MKDIR_P ?= mkdir -p
+.PHONY: distclean
+distclean:
+	@echo CLEAN $(DISTCLEAN_LIST)
+	@rm -f $(DISTCLEAN_LIST)
