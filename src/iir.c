@@ -9,7 +9,7 @@ void biquad_filter(float *s, biquad_t *b)
 }
 
 // https://www.earlevel.com/main/2011/01/02/biquad-formulas/
-biquad_t generate_biquad(filter_type_t type, float Fc, float Fs, float Q, float peakGain)
+inline biquad_t generate_biquad(filter_type_t type, float Fc, float Fs, float Q, float peakGain)
 {
     float a0 = 0, a1 = 0, a2 = 0, b1 = 0, b2 = 0, norm = 0;
 

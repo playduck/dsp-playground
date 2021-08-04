@@ -6,31 +6,36 @@ dynamic_gate_t generate_gate(float thresshold, float attack, float hold, float r
     double lnine = log10(9.0f);
     float alphaA = expf(-lnine / (attack * samplerate));
     float alphaR = expf(-lnine / (release * samplerate));
+    float OMalphaA = (1 - alphaA);
+    float OMalphaR = (1 - alphaR);
 
     dynamic_gate_t g = {
-        .attack = alphaA,
-        .release = alphaR,
-        .hold = hold,
+        .alphaA = alphaA,
+        .alphaR = alphaR,
+        .OMalphaA = OMalphaA,
+        .OMalphaR = OMalphaR,
+
+        .hold = (hold * samplerate),
         .gain = gain,
         .threshhold = tlin,
+
         .gs = 1.0f,
-        .Ca = 0.0f,
-        .timestep = 1.0f / samplerate};
+        .Ca = 0
+    };
 
     return g;
 }
 
-void dynamic_gate(float *s, dynamic_gate_t *d)
+inline void dynamic_gate(float *s, dynamic_gate_t *d)
 {
-    float abs = fabsf(*s);
-    float gc = abs < d->threshhold ? 0.0f : 1.0f;
-    float gs = gc;
+    gc = fabsf(*s) < d->threshhold ? 0.0f : 1.0f;
+    gs = gc;
 
-    d->Ca += d->timestep;
+    ++d->Ca;
     if (d->Ca > d->hold && gc <= d->gs)
     {
         // attack
-        gs = d->attack * d->gs + (1 - d->attack) * gc;
+        gs = d->alphaA * d->gs + d->OMalphaA * gc;
     }
     else if (d->Ca <= d->hold)
     {
@@ -40,7 +45,7 @@ void dynamic_gate(float *s, dynamic_gate_t *d)
     else if (gc > d->gs)
     {
         // release
-        gs = d->release * d->gs + (1 - d->release) * gc;
+        gs = d->alphaR * d->gs + d->OMalphaR * gc;
         d->Ca = 0.0f;
     }
 
