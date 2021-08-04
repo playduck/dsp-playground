@@ -1,8 +1,7 @@
 {
     "files.associations": {
-        "*.asc": "spice",
-        "pipeline.h": "c",
-        "iir.h": "c",
-        "stdio.h": "c"
+        "*.spec": "python",
+        "*.h": "c",
+        "*.c": "c"
     }
 }
