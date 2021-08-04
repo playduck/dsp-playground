@@ -1,4 +1,3 @@
-
 import numpy as np
 from scipy.io import wavfile
 import ctypes
@@ -9,7 +8,7 @@ num = 4
 infile = f"./data/test{num}.wav"
 outfile = f"./data/out{num}.wav"
 
-fun = ctypes.CDLL("./bin/main.so")
+fun = ctypes.CDLL("./bin/main")
 
 fun.process.argtypes = [ctypes.POINTER(
     ctypes.c_int16), ctypes.c_uint32, ctypes.c_uint16]
