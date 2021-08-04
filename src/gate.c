@@ -20,7 +20,7 @@ dynamic_gate_t generate_gate(float thresshold, float attack, float hold, float r
     return g;
 }
 
-void dynamic_gate(float *s, dynamic_gate_t *d)
+inline void dynamic_gate(float *s, dynamic_gate_t *d)
 {
     float abs = fabsf(*s);
     float gc = abs < d->threshhold ? 0.0f : 1.0f;
