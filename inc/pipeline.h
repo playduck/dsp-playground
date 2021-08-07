@@ -15,8 +15,6 @@ typedef enum {
 biquad_t filters[5*4];
 dynamic_gate_t gate[4];
 
-float s1, s2;
-
 void initilize(int);
 void process_sample(channel_t,volatile int16_t *,volatile int16_t *);
 #endif

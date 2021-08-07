@@ -1,11 +1,44 @@
 #include "iir.h"
 
-inline void biquad_filter(float *s, biquad_t *b)
+#define q 14
+#define scale14 (powf(2, q))
+// #define scale (1)
+int32_t accumulator = 0;
+
+inline void biquad_filter(int16_t *s, biquad_t *b)
 {
-    float out = *s * b->a[0] + b->z[1];
-    b->z[1] = (*s * b->a[1]) + (b->z[2] - b->b[1] * out);
-    b->z[2] = (*s * b->a[2]) - (b->b[2] * out);
-    *s = out;
+    // float out = *s * b->a[0] + b->z[1];
+    // b->z[1] = (*s * b->a[1]) + (b->z[2] - b->b[1] * out);
+    // b->z[2] = (*s * b->a[2]) - (b->b[2] * out);
+    // *s = out;
+
+    accumulator = b->state_error;
+
+    accumulator += b->b[0] * (*s);
+    accumulator += b->b[1] * b->x[1];
+    accumulator += b->b[2] * b->x[2];
+    accumulator += b->a[1] * b->y[1];
+    accumulator += b->a[2] * b->y[2];
+
+    if (accumulator > 0x1FFFFFFF)
+    {
+        accumulator = 0x1FFFFFFF;
+    }
+
+    if (accumulator < -0x20000000)
+    {
+        accumulator = -0x20000000;
+    }
+
+    b->x[2] = b->x[1];
+    b->x[1] = *s;
+    b->y[2] = b->y[1];
+    *s = (accumulator >> q);
+    b->y[1] = *s;
+
+    accumulator = accumulator & 0x00003FFF;
+
+    b->state_error = accumulator;
 }
 
 // https://www.earlevel.com/main/2011/01/02/biquad-formulas/
@@ -127,9 +160,14 @@ inline biquad_t generate_biquad(filter_type_t type, float Fc, float Fs, float Q,
 
     biquad_t flt = {
         .type = type,
-        .a = {a0, a1, a2},
-        .b = {0, b1, b2},
-        .z = {0, 0, 0}};
+        .b = {
+            (int32_t)(a0 * scale14),
+            (int32_t)(a1 * scale14),
+            (int32_t)(a2 * scale14)},
+        .a = {0, (int32_t)(-b1 * scale14), (int32_t)(-b2 * scale14)},
+        .z = {0, 0, 0},
+        .x = {0, 0, 0},
+        .y = {0, 0, 0}};
 
     return flt;
 }
