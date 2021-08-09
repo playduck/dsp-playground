@@ -29,7 +29,7 @@ len_c = ctypes.c_uint32(len(data))
 sample_c = ctypes.c_uint16(samplerate)
 
 acc = 0
-count = 1
+count = 100
 for i in range(count):
     start = timer()
     returnVale = fun.process(flat_p, len_c, sample_c)
@@ -41,18 +41,18 @@ print(f"{2 * len(data) * count} samples, with {round(((acc) * 1000 * 1000*1000) 
 
 restored = flat.reshape(-1, 2)
 
-wavfile.write(outfile, samplerate, restored)
-
-print(data[:, 0])
-print(restored[:, 0])
-
-plt.figure(1)
-plt.subplot(411)
-plt.specgram(restored[:, 0], Fs=samplerate, scale="dB", cmap="rainbow")
-plt.subplot(412)
-plt.specgram(restored[:, 1], Fs=samplerate, scale="dB", cmap="rainbow")
-plt.subplot(413)
-plt.specgram(data[:, 0], Fs=samplerate, scale="dB", cmap="rainbow")
-plt.subplot(414)
-plt.specgram(data[:, 1], Fs=samplerate, scale="dB", cmap="rainbow")
-plt.show()
+# wavfile.write(outfile, samplerate, restored)
+#
+# print(data[:, 0])
+# print(restored[:, 0])
+#
+# plt.figure(1)
+# plt.subplot(411)
+# plt.specgram(restored[:, 0], Fs=samplerate, scale="dB", cmap="rainbow")
+# plt.subplot(412)
+# plt.specgram(restored[:, 1], Fs=samplerate, scale="dB", cmap="rainbow")
+# plt.subplot(413)
+# plt.specgram(data[:, 0], Fs=samplerate, scale="dB", cmap="rainbow")
+# plt.subplot(414)
+# plt.specgram(data[:, 1], Fs=samplerate, scale="dB", cmap="rainbow")
+# plt.show()

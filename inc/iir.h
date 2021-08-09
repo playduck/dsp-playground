@@ -35,7 +35,7 @@ typedef struct
     int32_t state_error;
 } biquad_t;
 
-void biquad_filter(int16_t *s, biquad_t *b);
+int16_t biquad_filter(int16_t s, biquad_t *b);
 biquad_t generate_biquad(filter_type_t type, float Fc, float Fs, float Q, float peakGain);
 
 #endif

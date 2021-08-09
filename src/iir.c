@@ -5,40 +5,41 @@
 // #define scale (1)
 int32_t accumulator = 0;
 
-inline void biquad_filter(int16_t *s, biquad_t *b)
+inline int16_t biquad_filter(int16_t s, biquad_t *b)
 {
     // float out = *s * b->a[0] + b->z[1];
     // b->z[1] = (*s * b->a[1]) + (b->z[2] - b->b[1] * out);
     // b->z[2] = (*s * b->a[2]) - (b->b[2] * out);
     // *s = out;
+    int16_t out = 0;
 
     accumulator = b->state_error;
 
-    accumulator += b->b[0] * (*s);
+    accumulator += b->b[0] * (s);
     accumulator += b->b[1] * b->x[1];
     accumulator += b->b[2] * b->x[2];
     accumulator += b->a[1] * b->y[1];
     accumulator += b->a[2] * b->y[2];
 
-    if (accumulator > 0x1FFFFFFF)
-    {
+    if (accumulator > 0x1FFFFFFF)   {
         accumulator = 0x1FFFFFFF;
     }
 
-    if (accumulator < -0x20000000)
-    {
+    if (accumulator < -0x20000000)  {
         accumulator = -0x20000000;
     }
 
+    out = (accumulator >> q);
+
     b->x[2] = b->x[1];
-    b->x[1] = *s;
+    b->x[1] = s;
     b->y[2] = b->y[1];
-    *s = (accumulator >> q);
-    b->y[1] = *s;
+    b->y[1] = out;
 
     accumulator = accumulator & 0x00003FFF;
 
     b->state_error = accumulator;
+    return out;
 }
 
 // https://www.earlevel.com/main/2011/01/02/biquad-formulas/
