@@ -6,8 +6,8 @@ INC_PATH := inc
 
 # tool macros
 CC := gcc
-CCFLAGS := -Wall -Wextra -O3 -fPIC -I $(INC_PATH)
-CCOBJFLAGS := $(CCFLAGS) -c 
+CCFLAGS := -Wall -Wextra -O3 -fPIC -I $(INC_PATH)  -target x86_64-apple-macos12.1
+CCOBJFLAGS := $(CCFLAGS) -c
 
 # compile macros
 TARGET_NAME := main
