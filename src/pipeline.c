@@ -48,17 +48,17 @@ void process_sample(channel_t channel, volatile int16_t *sample1, volatile int16
             // dynamic_gate(sample1, gate + 2);
             // dynamic_gate(sample2, gate + 3);
 
-            *sample2 = biquad_filter(*sample2, filters + 10);
-            *sample1 = biquad_filter(*sample1, filters + 11);
-            *sample1 = biquad_filter(*sample1, filters + 12);
-            *sample1 = biquad_filter(*sample1, filters + 13);
-            *sample1 = biquad_filter(*sample1, filters + 14);
+            biquad_filter(sample2, filters + 10);
+            biquad_filter(sample1, filters + 11);
+            biquad_filter(sample1, filters + 12);
+            biquad_filter(sample1, filters + 13);
+            biquad_filter(sample1, filters + 14);
 
-            *sample2 = biquad_filter(*sample2, filters + 15);
-            *sample2 = biquad_filter(*sample2, filters + 16);
-            *sample2 = biquad_filter(*sample2, filters + 17);
-            *sample2 = biquad_filter(*sample2, filters + 18);
-            *sample2 = biquad_filter(*sample2, filters + 19);
+            biquad_filter(sample2, filters + 15);
+            biquad_filter(sample2, filters + 16);
+            biquad_filter(sample2, filters + 17);
+            biquad_filter(sample2, filters + 18);
+            biquad_filter(sample2, filters + 19);
 
             break;
         }

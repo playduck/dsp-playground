@@ -4,7 +4,7 @@ inline void biquad_filter(int16_t *s, biquad_t *b)
 {
     accumulator = b->state_error;
 
-    accumulator += b->b[0] * (s);
+    accumulator += b->b[0] * (*s);
     accumulator += b->b[1] * b->x[1];
     accumulator += b->b[2] * b->x[2];
     accumulator += b->a[1] * b->y[1];
@@ -14,12 +14,11 @@ inline void biquad_filter(int16_t *s, biquad_t *b)
 
     b->state_error = accumulator & ACC_REM;
 
-    out = (accumulator >> q);
-
     b->x[2] = b->x[1];
-    b->x[1] = s;
+    b->x[1] = *s;
     b->y[2] = b->y[1];
-    b->y[1] = out;
+    *s = (accumulator >> q);
+    b->y[1] = *s;
 
 }
 

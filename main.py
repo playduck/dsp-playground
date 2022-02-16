@@ -29,7 +29,7 @@ len_c = ctypes.c_uint32(len(data))
 sample_c = ctypes.c_uint16(samplerate)
 
 acc = 0
-count = 100
+count = 1
 for i in range(count):
     start = timer()
     returnVale = fun.process(flat_p, len_c, sample_c)
