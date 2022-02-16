@@ -145,7 +145,7 @@ inline biquad_t generate_biquad(filter_type_t type, float Fc, float Fs, float Q,
             (int32_t)(a0 * scale14),
             (int32_t)(a1 * scale14),
             (int32_t)(a2 * scale14)},
-        .a = {0, (int32_t)(-b1 * scale14), (int32_t)(-b2 * scale14)},
+        .a = {1, (int32_t)(-b1 * scale14), (int32_t)(-b2 * scale14)},
         .z = {0, 0, 0},
         .x = {0, 0, 0},
         .y = {0, 0, 0}};
