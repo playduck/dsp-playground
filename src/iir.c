@@ -19,7 +19,6 @@ inline void biquad_filter(int16_t *s, biquad_t *b)
     b->y[2] = b->y[1];
     *s = (accumulator >> q);
     b->y[1] = *s;
-
 }
 
 // https://www.earlevel.com/main/2011/01/02/biquad-formulas/
