@@ -1,16 +1,12 @@
 #ifndef IIR_H
 #define IIR_H
+#pragma once
+
 #include <math.h>
 #include <stdint.h>
 #include <stdio.h>
 
-#ifndef M_PI
-#define M_PI (3.1415926535897)
-#endif
-
-#ifndef M_SQRT2
-#define M_SQRT2 (1.41421356237)
-#endif
+#include "constant.h"
 
 typedef enum
 {
@@ -34,6 +30,8 @@ typedef struct
     int32_t y[3];
     int32_t state_error;
 } biquad_t;
+
+extern int32_t accumulator;
 
 void biquad_filter(int16_t *s, biquad_t *b);
 biquad_t generate_biquad(filter_type_t type, float Fc, float Fs, float Q, float peakGain);

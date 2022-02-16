@@ -1,17 +1,7 @@
 #include "iir.h"
 
-#define q 14
-#define scale14 (powf(2, q))
-// #define scale (1)
-int32_t accumulator = 0;
-
 inline void biquad_filter(int16_t *s, biquad_t *b)
 {
-    // float out = *s * b->a[0] + b->z[1];
-    // b->z[1] = (*s * b->a[1]) + (b->z[2] - b->b[1] * out);
-    // b->z[2] = (*s * b->a[2]) - (b->b[2] * out);
-    // *s = out;
-
     accumulator = b->state_error;
 
     accumulator += b->b[0] * (*s);
@@ -20,15 +10,9 @@ inline void biquad_filter(int16_t *s, biquad_t *b)
     accumulator += b->a[1] * b->y[1];
     accumulator += b->a[2] * b->y[2];
 
-    if (accumulator > 0x1FFFFFFF)
-    {
-        accumulator = 0x1FFFFFFF;
-    }
+    accumulator = CLAMP(accumulator, ACC_MAX, ACC_MIN);
 
-    if (accumulator < -0x20000000)
-    {
-        accumulator = -0x20000000;
-    }
+    b->state_error = accumulator & ACC_REM;
 
     b->x[2] = b->x[1];
     b->x[1] = *s;
@@ -36,9 +20,6 @@ inline void biquad_filter(int16_t *s, biquad_t *b)
     *s = (accumulator >> q);
     b->y[1] = *s;
 
-    accumulator = accumulator & 0x00003FFF;
-
-    b->state_error = accumulator;
 }
 
 // https://www.earlevel.com/main/2011/01/02/biquad-formulas/
