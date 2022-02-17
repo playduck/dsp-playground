@@ -3,27 +3,24 @@
 virtual_bass_t generate_virtual_bass(float Lcutoff, float Ecutoff, float gain, uint16_t samplerate)   {
     float glin = powf(10.0f, (gain / 20.0f));
 
-
     virtual_bass_t vb = {
         .lr_lowpass = {
-            generate_biquad(lowpass, Lcutoff, samplerate, 0.54119610f, 0),
-            generate_biquad(lowpass, Lcutoff, samplerate, 1.3065630f, 0)
+            generate_biquad(lowpass, Lcutoff, 0.54119610f, 0, samplerate),
+            generate_biquad(lowpass, Lcutoff, 1.3065630f, 0, samplerate)
         },
-        
+
         .lr_highpass = {
-            generate_biquad(highpass, Lcutoff, samplerate, 0.54119610f, 0),
-            generate_biquad(highpass, Lcutoff, samplerate, 1.3065630f, 0)
+            generate_biquad(highpass, Lcutoff, 0.54119610f, 0, samplerate),
+            generate_biquad(highpass, Lcutoff, 1.3065630f, 0, samplerate)
         },
-  
+
         .nld_bandpass = {
-            generate_biquad(highpass, Lcutoff, samplerate, 0.7071f, 0),
-            generate_biquad(lowpass, Ecutoff, samplerate, 0.7071f, 0)
+            generate_biquad(highpass, Lcutoff, M_SQRT2_H, 0, samplerate),
+            generate_biquad(lowpass, Ecutoff, M_SQRT2_H, 0, samplerate)
         },
         .gain = glin,
         .u1 = 0.0f,
         .y1 = 0.0f,
-
-        .state_error = 0
     };
 
     return vb;
@@ -34,11 +31,11 @@ inline float soft(float s)    {
     return tanhf(s);
 }
 
-inline void virtual_bass(int16_t* s, virtual_bass_t* vb)    {
+inline void virtual_bass(sample_t* s, virtual_bass_t* vb)    {
 
     // X over
-    int16_t hp = *s;
-    int16_t lp = *s;
+    sample_t hp = *s;
+    sample_t lp = *s;
 
     biquad_filter(&lp, vb->lr_lowpass);
     biquad_filter(&lp, vb->lr_lowpass + 1);
@@ -47,7 +44,7 @@ inline void virtual_bass(int16_t* s, virtual_bass_t* vb)    {
     biquad_filter(&hp, vb->lr_highpass + 1);
 
     // NLD
-    float u0 = (float)lp / (float)INT16_MAX;
+    float u0 = lp;
     float y0 = 0.0;
 
     if((u0 > 0.0f) && (vb->u1 <= 0.0f))  {
@@ -59,26 +56,13 @@ inline void virtual_bass(int16_t* s, virtual_bass_t* vb)    {
     vb->u1 = u0;
     vb->y1 = y0;
 
-    lp = (int16_t)roundf(y0 * INT16_MAX);
+    lp = y0;
 
     // Bandpass
     biquad_filter(&lp, vb->nld_bandpass);
     biquad_filter(&lp, vb->nld_bandpass + 1);
 
-    // Gain
-    // *s = lp;
-    // return;
+    // Gain & Mix
+    *s = hp + (lp * vb->gain);
 
-    accumulator = vb->state_error;
-    accumulator += lp * (int32_t)(scale14 * (vb->gain));
-
-    accumulator = CLAMP(accumulator, ACC_MAX, ACC_MIN);
-
-    vb->state_error = accumulator & ACC_REM;
-
-    // Mix
-    *s = hp + (accumulator >> q);
-    // *s = (accumulator >> q);
-
-    
 }
