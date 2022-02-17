@@ -17,9 +17,8 @@ typedef struct
     float alphaR;
     float OMalphaA;
     float OMalphaR;
-    
+
     float gs;
-    int32_t state_error;
 } dynamic_compressor_t;
 
 float gc;
@@ -28,6 +27,6 @@ float gs;
 extern int32_t accumulator;
 
 dynamic_compressor_t generate_compressor(float threshold, float ratio, float width, float attack, float release, float gain, uint16_t samplerate);
-void dynamic_compressor(int16_t *s, dynamic_compressor_t *c);
+void dynamic_compressor(sample_t *s, dynamic_compressor_t *c);
 
 #endif

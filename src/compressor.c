@@ -22,17 +22,14 @@ dynamic_compressor_t generate_compressor(float threshold, float ratio, float wid
         .threshold = threshold,
 
         .gs = 1.0f,
-
-        .state_error = 0
     };
 
     return c;
 }
 
-void dynamic_compressor(int16_t *s, dynamic_compressor_t *c)
+void dynamic_compressor(sample_t *s, dynamic_compressor_t *c)
 {
-    
-    float xnormal = fabsf((float)*s / (float)INT16_MAX);
+    float xnormal = fabsf(*s);
     float xdb = 20.0f * log10f(xnormal);
 
     // gain computer
@@ -53,19 +50,11 @@ void dynamic_compressor(int16_t *s, dynamic_compressor_t *c)
         gs = c->alphaR * gs + c->OMalphaR * gc;
     }
 
-    // printf("%f\n", gs);
-
+    // makeup
     c->gs = gs;
     gs += c->gain;
 
+    // apply
     float glin = powf(10.0f, gs/20.0f);
-
-    accumulator = c->state_error;
-    accumulator += (*s) * (int32_t)(glin * scale14);
-
-    accumulator = CLAMP(accumulator, ACC_MAX, ACC_MIN);
-
-    c->state_error = accumulator & ACC_REM;
-
-    *s = (accumulator >> q);
+    *s = (*s) * glin;
 }
