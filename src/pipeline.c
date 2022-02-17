@@ -6,7 +6,11 @@ sample_t fixed_to_float(int16_t* s)  {
 }
 
 int16_t float_to_fixed(sample_t s)   {
-    return (int16_t)(roundf(tanhf(s) * INT16_MAX));
+    // hard clipping
+    s = (s >= 1.0f) ? 1.0f : s;
+    s = (s <= -1.0f) ? -1.0f : s;
+
+    return (int16_t)(roundf(s * (float)INT16_MAX));
 }
 
 void initilize(uint16_t samplerate)
