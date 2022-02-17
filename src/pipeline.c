@@ -1,71 +1,57 @@
 #include "pipeline.h"
 #include <stdio.h>
 
-void initilize(int samplerate)
-{
-    for(uint8_t i = 0; i < (4*5); i++)    {
-        filters[i] = generate_biquad(lowpass, 600, samplerate, 2, 0);
-    }
-
-    gate[0] = generate_gate(-20, 0.05, 0.01, 0.001, 0, samplerate);
-    gate[1] = generate_gate(-2, 0.05, 0.01, 0.001, 0, samplerate);
-
-    compressor[0] = generate_compressor(-10, 4, 3, 0.00001, 0.0001, -8, samplerate);
-    compressor[1] = generate_compressor(-10, 4, 3, 0.00001, 0.0001, -8, samplerate);
-    compressor[2] = generate_compressor(-10, 2, 1, 0.000001, 0.000001, 2, samplerate);
-    compressor[3] = generate_compressor(-10, 2, 1, 0.000001, 0.000001, 2, samplerate);
-
-    vb[0] = generate_virtual_bass(120, 140, -4.0, samplerate);
-    vb[1] = generate_virtual_bass(120, 140, -4.0, samplerate);
+sample_t fixed_to_float(int16_t* s)  {
+    return (sample_t)((sample_t) *s / (sample_t)INT16_MAX);
 }
 
-void process_sample(channel_t channel, volatile int16_t *sample1, volatile int16_t *sample2)
+int16_t float_to_fixed(sample_t s)   {
+    return (int16_t)(roundf(tanhf(s) * INT16_MAX));
+}
+
+void initilize(uint16_t samplerate)
 {
+    for(uint8_t i = 0; i < (4*5); i++)    {
+        filters[i] = generate_biquad(highpass, 180, M_SQRT2_H, 0, samplerate);
+    }
+
+    gate[0] = generate_gate(-26, 0.1, 0.2, 0.0001, 0, samplerate);
+    gate[1] = generate_gate(-26, 0.1, 0.2, 0.0001, 0, samplerate);
+
+    compressor[0] = generate_compressor(-8, 4, 3, 0.00001, 0.0001, -1, samplerate);
+    compressor[1] = generate_compressor(-8, 4, 3, 0.00001, 0.0001, -1, samplerate);
+
+    vb[0] = generate_virtual_bass(180, 280, -28.0, samplerate);
+    vb[1] = generate_virtual_bass(180, 280, -28.0, samplerate);
+}
+
+void process_sample(channel_t channel, int16_t *i16pSample1, int16_t *i16pSample2)
+{
+
+    sample1 = fixed_to_float(i16pSample1);
+    sample2 = fixed_to_float(i16pSample2);
+
     switch(channel)     {
         case CHANNEL_ONE:   {
-            // dynamic_gate(sample1, gate);
-            // dynamic_gate(sample2, gate + 1);
+            dynamic_gate(&sample1, gate);
+            dynamic_gate(&sample2, gate + 1);
 
-            dynamic_compressor(sample1, compressor);
-            dynamic_compressor(sample2, compressor + 1);
+            virtual_bass(&sample1, vb);
+            virtual_bass(&sample2, vb + 1);
 
-            virtual_bass(sample1, vb);
-            virtual_bass(sample2, vb + 1);
+            dynamic_compressor(&sample1, compressor);
+            dynamic_compressor(&sample2, compressor + 1);
 
-            // dynamic_compressor(sample1, compressor + 2);
-            // dynamic_compressor(sample2, compressor + 3);
-
-            // biquad_filter(sample1, filters + 0);
-            // biquad_filter(sample2, filters + 1);
-            // biquad_filter(sample1, filters + 2);
-            // biquad_filter(sample1, filters + 3);
-            // biquad_filter(sample1, filters + 4);
-
-            // biquad_filter(sample2, filters + 5);
-            // biquad_filter(sample2, filters + 6);
-            // biquad_filter(sample2, filters + 7);
-            // biquad_filter(sample2, filters + 8);
-            // biquad_filter(sample2, filters + 9);
-
+            biquad_filter(&sample1, filters + 0);
+            biquad_filter(&sample2, filters + 1);
             break;
         }
         case CHANNEL_TWO:   {
-            // dynamic_gate(sample1, gate + 2);
-            // dynamic_gate(sample2, gate + 3);
-
-            biquad_filter(sample2, filters + 10);
-            biquad_filter(sample1, filters + 11);
-            biquad_filter(sample1, filters + 12);
-            biquad_filter(sample1, filters + 13);
-            biquad_filter(sample1, filters + 14);
-
-            biquad_filter(sample2, filters + 15);
-            biquad_filter(sample2, filters + 16);
-            biquad_filter(sample2, filters + 17);
-            biquad_filter(sample2, filters + 18);
-            biquad_filter(sample2, filters + 19);
-
             break;
         }
     }
+
+    *i16pSample1 = float_to_fixed(sample1);
+    *i16pSample2 = float_to_fixed(sample2);
+
 }

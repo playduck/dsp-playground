@@ -10,8 +10,7 @@
 #define M_SQRT2 (1.41421356237)
 #endif
 
-#define q (14)
-#define scale14 (powf(2, q))
+#define M_SQRT2_H (0.7071067812f)
 
 #define ACC_MAX 0x1FFFFFFF
 #define ACC_MIN -0x20000000
@@ -20,5 +19,8 @@
 #define CLAMP(x, a, b) (x > a ? a : (x < b ? b : x))
 #define MAX(a, b) (a > b ? a : b)
 #define MIN(a, b) (a < b ? a : b)
+
+#
+typedef float sample_t;
 
 #endif

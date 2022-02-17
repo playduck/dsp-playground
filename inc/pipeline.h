@@ -24,6 +24,8 @@ dynamic_gate_t gate[4];
 dynamic_compressor_t compressor[4];
 virtual_bass_t vb[2];
 
-void initilize(int);
-void process_sample(channel_t,volatile int16_t *,volatile int16_t *);
+sample_t sample1, sample2;
+
+void initilize(uint16_t samplerate);
+void process_sample(channel_t channel, int16_t *i16pSample1, int16_t *i16pSample2);
 #endif
