@@ -23,17 +23,12 @@ typedef enum
 typedef struct
 {
     filter_type_t type;
-    int32_t a[3];
-    int32_t b[3];
-    int32_t z[3];
-    int32_t x[3];
-    int32_t y[3];
-    int32_t state_error;
+    float a[3];
+    float b[3];
+    float d[2];
 } biquad_t;
 
-extern int32_t accumulator;
-
-void biquad_filter(int16_t *s, biquad_t *b);
-biquad_t generate_biquad(filter_type_t type, float Fc, float Fs, float Q, float peakGain);
+void biquad_filter(sample_t *s, biquad_t *b);
+biquad_t generate_biquad(filter_type_t type, float Fc, float Q, float peakGain, float Fs);
 
 #endif

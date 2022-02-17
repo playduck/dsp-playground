@@ -1,33 +1,41 @@
 #include "iir.h"
 
-inline void biquad_filter(int16_t *s, biquad_t *b)
+inline void biquad_filter(sample_t *s, biquad_t *b)
 {
-    accumulator = b->state_error;
+    // accumulator = b->state_error;
 
-    accumulator += b->b[0] * (*s);
-    accumulator += b->b[1] * b->x[1];
-    accumulator += b->b[2] * b->x[2];
-    accumulator += b->a[1] * b->y[1];
-    accumulator += b->a[2] * b->y[2];
+    // accumulator += b->b[0] * (*s);
+    // accumulator += b->b[1] * b->x[1];
+    // accumulator += b->b[2] * b->x[2];
+    // accumulator += b->a[1] * b->y[1];
+    // accumulator += b->a[2] * b->y[2];
 
-    accumulator = CLAMP(accumulator, ACC_MAX, ACC_MIN);
+    // accumulator = CLAMP(accumulator, ACC_MAX, ACC_MIN);
 
-    b->state_error = accumulator & ACC_REM;
+    // b->state_error = accumulator & ACC_REM;
 
-    b->x[2] = b->x[1];
-    b->x[1] = *s;
-    b->y[2] = b->y[1];
-    *s = (accumulator >> q);
-    b->y[1] = *s;
+    // b->x[2] = b->x[1];
+    // b->x[1] = *s;
+    // b->y[2] = b->y[1];
+    // *s = (accumulator >> q);
+    // b->y[1] = *s;
+
+
+
+    sample_t out = b->b[0] * (*s) + b->d[0];
+    b->d[0] = b->b[1] * (*s) + b->a[1] * out + b->d[1];
+    b->d[1] = b->b[2] * (*s) + b->a[2] * out;
+    *s = out;
+
 
 }
 
 // https://www.earlevel.com/main/2011/01/02/biquad-formulas/
-inline biquad_t generate_biquad(filter_type_t type, float Fc, float Fs, float Q, float peakGain)
+inline biquad_t generate_biquad(filter_type_t type, float Fc, float Q, float peakGain, float Fs)
 {
-    float a0 = 0, a1 = 0, a2 = 0, b1 = 0, b2 = 0, norm = 0;
+    float a0 = 0.0f, a1 = 0.0f, a2 = 0.0f, b1 = 0.0f, b2 = 0.0f, norm = 0.0f;
 
-    float V = powf(10, fabsf(peakGain) / 20);
+    float V = powf(10.0f, fabsf(peakGain) / 20.0f);
     float K = tanf(M_PI * Fc / Fs);
 
     switch (type)
@@ -131,24 +139,20 @@ inline biquad_t generate_biquad(filter_type_t type, float Fc, float Fs, float Q,
     case none:
     default:
         type = none;
-        a0 = 0;
-        a1 = 0;
-        a2 = 0;
-        b1 = 0;
-        b2 = 0;
+        a0 = 0.0f;
+        a1 = 0.0f;
+        a2 = 0.0f;
+        b1 = 0.0f;
+        b2 = 0.0f;
         break;
     }
 
     biquad_t flt = {
         .type = type,
-        .b = {
-            (int32_t)(a0 * scale14),
-            (int32_t)(a1 * scale14),
-            (int32_t)(a2 * scale14)},
-        .a = {1, (int32_t)(-b1 * scale14), (int32_t)(-b2 * scale14)},
-        .z = {0, 0, 0},
-        .x = {0, 0, 0},
-        .y = {0, 0, 0}};
+        .b = {a0, a1, a2},
+        .a = {1.0f, -b1, -b2},
+        .d = {0.0f, 0.0f}
+    };
 
     return flt;
 }
