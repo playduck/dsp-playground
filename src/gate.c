@@ -21,17 +21,15 @@ dynamic_gate_t generate_gate(float thresshold, float attack, float hold, float r
         .threshold = tlin,
 
         .gs = 1.0f,
-        .Ca = 0,
-
-        .state_error = 0
+        .Ca = 0
     };
 
     return g;
 }
 
-inline void dynamic_gate(int16_t *s, dynamic_gate_t *d)
+inline void dynamic_gate(float *s, dynamic_gate_t *d)
 {
-    if((fabsf((float)*s / (float)INT16_MAX)) < d->threshold)   {
+    if(fabsf(*s) < d->threshold)   {
         gc = 0.0f;
     }   else    {
         gc = 1.0f;
@@ -55,15 +53,9 @@ inline void dynamic_gate(int16_t *s, dynamic_gate_t *d)
         d->Ca = 0;
     }
 
+    // makeup
     d->gs = gs;
     gs += d->gain;
 
-    accumulator = d->state_error;
-    accumulator += (*s) * (int32_t)(gs * scale14);
-
-    accumulator = CLAMP(accumulator, ACC_MAX, ACC_MIN);
-
-    d->state_error = accumulator & ACC_REM;
-
-    *s = (accumulator >> q);
+    *s = (*s) * gs;
 }
