@@ -1,3 +1,9 @@
+ifeq ($(OS),Windows_NT) # is Windows_NT on XP, 2000, 7, Vista, 10...
+    detected_OS := Windows
+else
+    detected_OS := $(shell uname) # same as "uname -s"
+endif
+
 # path macros
 BIN_PATH := bin
 OBJ_PATH := obj
@@ -6,12 +12,20 @@ INC_PATH := inc
 
 # tool macros
 CC := gcc
-CCFLAGS := -Wall -Wextra -O3 -fPIC -I $(INC_PATH)  -target x86_64-apple-macos12.1
+CCFLAGS := \
+	-O3 -fPIC -I $(INC_PATH) -Wall -Wextra -Wfloat-equal -Wundef  -Wshadow \
+	-Wpointer-arith -Wcast-align -Wstrict-prototypes -Wstrict-overflow=5 \
+	-Wformat=2 -Wwrite-strings -Waggregate-return -Wcast-qual -Wswitch-default \
+	-Wswitch-enum -Wconversion -Wunreachable-code
+
+ifeq ($(detected_OS),Darwin ) # Space in "Darwin " is required
+	CCFLAGS := $(CCFLAGS) -target x86_64-apple-macos12.1
+endif
 CCOBJFLAGS := $(CCFLAGS) -c
 
 # compile macros
 TARGET_NAME := main
-ifeq ($(OS),Windows_NT)
+ifeq ($(detected_OS),Windows)
 	TARGET_NAME := $(addsuffix .dll,$(TARGET_NAME))
 endif
 TARGET := $(BIN_PATH)/$(TARGET_NAME)
@@ -26,7 +40,8 @@ CLEAN_LIST := $(TARGET) \
 			  $(DISTCLEAN_LIST)
 CLEAN := @rm -f $(CLEAN_LIST)
 DISTCLEAN := @rm -f $(DISTCLEAN_LIST)
-ifeq ($(OS),Windows_NT)
+
+ifeq ($(detected_OS),Windows)
 	SHELL := powershell.exe
 	.SHELLFLAGS := -NoProfile -Command
 	CLEAN := "$(CLEAN_LIST)" -split " " | ForEach-Object {Remove-Item $$_}
@@ -60,3 +75,7 @@ clean:
 distclean:
 	@echo CLEAN $(DISTCLEAN_LIST);
 	$(DISTCLEAN)
+
+.PHONEY: os
+os:
+	echo "$(detected_OS)"
