@@ -4,8 +4,9 @@
 
 #include "constant.h"
 
-typedef struct {
-    sample_t* buffer;
+typedef struct
+{
+    sample_t *buffer;
     float wet;
     float delayMs;
 
@@ -15,6 +16,6 @@ typedef struct {
 } delay_line_t;
 
 delay_line_t generate_delay_line(float ms, float wet, uint16_t samplerate);
-void delay_line(sample_t* s, delay_line_t* d);
+void delay_line(sample_t *s, delay_line_t *d);
 
 #endif

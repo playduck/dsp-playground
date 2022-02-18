@@ -1,23 +1,19 @@
 #include "virtual-bass.h"
 
-virtual_bass_t generate_virtual_bass(float Lcutoff, float Ecutoff, float gain, uint16_t samplerate)   {
+virtual_bass_t generate_virtual_bass(float Lcutoff, float Ecutoff, float gain, uint16_t samplerate)
+{
     float glin = powf(10.0f, (gain / 20.0f));
 
     virtual_bass_t vb = {
         .lr_lowpass = {
             generate_biquad(lowpass, Lcutoff, 0.54119610f, 0, samplerate),
-            generate_biquad(lowpass, Lcutoff, 1.3065630f, 0, samplerate)
-        },
-
+            generate_biquad(lowpass, Lcutoff, 1.3065630f, 0, samplerate)},
         .lr_highpass = {
             generate_biquad(highpass, Lcutoff, 0.54119610f, 0, samplerate),
-            generate_biquad(highpass, Lcutoff, 1.3065630f, 0, samplerate)
-        },
-
+            generate_biquad(highpass, Lcutoff, 1.3065630f, 0, samplerate)},
         .nld_bandpass = {
             generate_biquad(highpass, Lcutoff, M_SQRT2_H, 0, samplerate),
-            generate_biquad(lowpass, Ecutoff, M_SQRT2_H, 0, samplerate)
-        },
+            generate_biquad(lowpass, Ecutoff, M_SQRT2_H, 0, samplerate)},
         .gain = glin,
         .u1 = 0.0f,
         .y1 = 0.0f,
@@ -26,12 +22,13 @@ virtual_bass_t generate_virtual_bass(float Lcutoff, float Ecutoff, float gain, u
     return vb;
 }
 
-
-inline float soft(float s)    {
+inline float soft(float s)
+{
     return tanhf(s);
 }
 
-inline void virtual_bass(sample_t* s, virtual_bass_t* vb)    {
+inline void virtual_bass(sample_t *s, virtual_bass_t *vb)
+{
 
     // X over
     sample_t hp = *s;
@@ -47,9 +44,12 @@ inline void virtual_bass(sample_t* s, virtual_bass_t* vb)    {
     float u0 = lp;
     float y0 = 0.0;
 
-    if((u0 > 0.0f) && (vb->u1 <= 0.0f))  {
+    if ((u0 > 0.0f) && (vb->u1 <= 0.0f))
+    {
         y0 = 0.0f;
-    }   else    {
+    }
+    else
+    {
         y0 = ((vb->y1 + vb->u1));
     }
 
@@ -64,5 +64,4 @@ inline void virtual_bass(sample_t* s, virtual_bass_t* vb)    {
 
     // Gain & Mix
     *s = hp + (lp * vb->gain);
-
 }

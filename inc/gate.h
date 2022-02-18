@@ -21,7 +21,13 @@ typedef struct
 float gc;
 float gs;
 
-dynamic_gate_t generate_gate(float thresshold, float attack, float hold, float release, float gain, uint16_t samplerate);
+dynamic_gate_t generate_gate(
+    float thresshold,
+    float attack,
+    float hold,
+    float release,
+    float gain,
+    uint16_t samplerate);
 void dynamic_gate(float *s, dynamic_gate_t *d);
 
 #endif

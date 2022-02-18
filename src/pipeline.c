@@ -1,11 +1,13 @@
 #include "pipeline.h"
 #include <stdio.h>
 
-sample_t fixed_to_float(int16_t* s)  {
-    return (sample_t)((sample_t) *s / (sample_t)INT16_MAX);
+sample_t fixed_to_float(int16_t *s)
+{
+    return (sample_t)((sample_t)*s / (sample_t)INT16_MAX);
 }
 
-int16_t float_to_fixed(sample_t s)   {
+int16_t float_to_fixed(sample_t s)
+{
     // hard clipping
     s = (s >= 1.0f) ? 1.0f : s;
     s = (s <= -1.0f) ? -1.0f : s;

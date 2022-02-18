@@ -129,8 +129,7 @@ inline biquad_t generate_biquad(filter_type_t type, float Fc, float Q, float pea
         .type = type,
         .b = {a0, a1, a2},
         .a = {1.0f, -b1, -b2},
-        .d = {0.0f, 0.0f}
-    };
+        .d = {0.0f, 0.0f}};
 
     return flt;
 }

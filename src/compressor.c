@@ -1,6 +1,13 @@
 #include "compressor.h"
 
-dynamic_compressor_t generate_compressor(float threshold, float ratio, float width, float attack, float release, float gain, uint16_t samplerate)
+dynamic_compressor_t generate_compressor(
+    float threshold,
+    float ratio,
+    float width,
+    float attack,
+    float release,
+    float gain,
+    uint16_t samplerate)
 {
     float glin = powf(10.0f, (gain / 20.0f)) - 1.0f;
 
@@ -34,19 +41,27 @@ void dynamic_compressor(sample_t *s, dynamic_compressor_t *c)
 
     // gain computer
     float xsc = 0.0f;
-    if(xdb < (c->threshold - (c->width/2)))  {
+    if (xdb < (c->threshold - (c->width / 2)))
+    {
         xsc = xdb;
-    }   else if(((c->threshold - (c->width/2)) <= xdb) && (xdb <= (c->threshold + (c->width/2)))) {
-        xsc = xdb + (((1/c->ratio) - 1) * powf((xdb - c->threshold + (c->width/2)), 2))/(2 * c->width);
-    }   else if(xdb > (c->threshold + (c->width/2)))    {
-        xsc = c->threshold + ((xdb - c->threshold)/c->ratio);
+    }
+    else if (((c->threshold - (c->width / 2)) <= xdb) && (xdb <= (c->threshold + (c->width / 2))))
+    {
+        xsc = xdb + (((1 / c->ratio) - 1) * powf((xdb - c->threshold + (c->width / 2)), 2)) / (2 * c->width);
+    }
+    else if (xdb > (c->threshold + (c->width / 2)))
+    {
+        xsc = c->threshold + ((xdb - c->threshold) / c->ratio);
     }
     gc = xsc - xdb;
 
-    //smoothing
-    if(gc <= gs)    {
+    // smoothing
+    if (gc <= gs)
+    {
         gs = c->alphaA * gs + c->OMalphaA * gc;
-    }   else if(gc > gs)    {
+    }
+    else if (gc > gs)
+    {
         gs = c->alphaR * gs + c->OMalphaR * gc;
     }
 
@@ -55,6 +70,6 @@ void dynamic_compressor(sample_t *s, dynamic_compressor_t *c)
     gs += c->gain;
 
     // apply
-    float glin = powf(10.0f, gs/20.0f);
+    float glin = powf(10.0f, gs / 20.0f);
     *s = (*s) * glin;
 }

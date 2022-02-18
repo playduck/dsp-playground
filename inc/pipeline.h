@@ -15,7 +15,7 @@ int32_t accumulator;
 
 gain_t vol[2];
 delay_line_t delay[2];
-biquad_t filters[5*4];
+biquad_t filters[5 * 4];
 dynamic_gate_t gate[4];
 dynamic_compressor_t compressor[4];
 virtual_bass_t vb[2];

@@ -31,7 +31,8 @@ for i in range(count):
     end = timer()
     acc += (end - start)
 
-print(f"processed {2 * len(data)} samples {count} times in {round((acc) * 1000, 3)}ms")
+print(
+    f"processed {2 * len(data)} samples {count} times in {round((acc) * 1000, 3)}ms")
 print(f"{2 * len(data) * count} samples, with {round(((acc) * 1000 * 1000*1000) / (2*len(data)*count), 3)}ns per sample")
 
 restored = flat.reshape(-1, 2)
@@ -43,11 +44,15 @@ print(restored[:, 0])
 
 plt.figure(1)
 plt.subplot(411)
-plt.specgram(restored[:, 0], Fs=samplerate, scale="dB", mode="magnitude", cmap="rainbow")
+plt.specgram(restored[:, 0], Fs=samplerate, scale="dB",
+             mode="magnitude", cmap="rainbow")
 plt.subplot(412)
-plt.specgram(restored[:, 1], Fs=samplerate, scale="dB", mode="magnitude", cmap="rainbow")
+plt.specgram(restored[:, 1], Fs=samplerate, scale="dB",
+             mode="magnitude", cmap="rainbow")
 plt.subplot(413)
-plt.specgram(data[:, 0], Fs=samplerate, scale="dB", mode="magnitude", cmap="rainbow")
+plt.specgram(data[:, 0], Fs=samplerate, scale="dB",
+             mode="magnitude", cmap="rainbow")
 plt.subplot(414)
-plt.specgram(data[:, 1], Fs=samplerate, scale="dB", mode="magnitude", cmap="rainbow")
+plt.specgram(data[:, 1], Fs=samplerate, scale="dB",
+             mode="magnitude", cmap="rainbow")
 plt.show()

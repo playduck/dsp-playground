@@ -1,6 +1,12 @@
 #include "gate.h"
 
-dynamic_gate_t generate_gate(float thresshold, float attack, float hold, float release, float gain, uint16_t samplerate)
+dynamic_gate_t generate_gate(
+    float thresshold,
+    float attack,
+    float hold,
+    float release,
+    float gain,
+    uint16_t samplerate)
 {
     float tlin = powf(10.0f, (thresshold / 20.0f));
     float glin = powf(10.0f, (gain / 20.0f)) - 1.0f;
@@ -21,17 +27,19 @@ dynamic_gate_t generate_gate(float thresshold, float attack, float hold, float r
         .threshold = tlin,
 
         .gs = 1.0f,
-        .Ca = 0
-    };
+        .Ca = 0};
 
     return g;
 }
 
 inline void dynamic_gate(float *s, dynamic_gate_t *d)
 {
-    if(fabsf(*s) < d->threshold)   {
+    if (fabsf(*s) < d->threshold)
+    {
         gc = 0.0f;
-    }   else    {
+    }
+    else
+    {
         gc = 1.0f;
     }
 
