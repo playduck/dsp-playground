@@ -2,10 +2,6 @@
 #define IIR_H
 #pragma once
 
-#include <math.h>
-#include <stdint.h>
-#include <stdio.h>
-
 #include "constant.h"
 
 typedef enum

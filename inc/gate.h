@@ -2,9 +2,6 @@
 #define GATE_H
 #pragma once
 
-#include <stdint.h>
-#include <math.h>
-
 #include "constant.h"
 
 typedef struct

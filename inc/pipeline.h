@@ -2,9 +2,6 @@
 #define PIPELINE_H
 #pragma once
 
-#include <stdint.h>
-#include <math.h>
-
 #include "constant.h"
 
 #include "gain.h"
