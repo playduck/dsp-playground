@@ -7,6 +7,7 @@
 
 #include "constant.h"
 
+#include "gain.h"
 #include "iir.h"
 #include "gate.h"
 #include "compressor.h"
@@ -19,6 +20,7 @@ typedef enum {
 
 int32_t accumulator;
 
+gain_t vol[2];
 biquad_t filters[5*4];
 dynamic_gate_t gate[4];
 dynamic_compressor_t compressor[4];

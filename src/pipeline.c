@@ -19,6 +19,9 @@ void initilize(uint16_t samplerate)
         filters[i] = generate_biquad(highpass, 180, M_SQRT2_H, 0, samplerate);
     }
 
+    vol[0] = generate_gain(0.0f);
+    vol[1] = generate_gain(0.0f);
+
     gate[0] = generate_gate(-26, 0.1, 0.2, 0.0001, 0, samplerate);
     gate[1] = generate_gate(-26, 0.1, 0.2, 0.0001, 0, samplerate);
 
@@ -48,6 +51,10 @@ void process_sample(channel_t channel, int16_t *i16pSample1, int16_t *i16pSample
 
             biquad_filter(&sample1, filters + 0);
             biquad_filter(&sample2, filters + 1);
+
+            gain(&sample1, vol + 0);
+            gain(&sample2, vol + 1);
+
             break;
         }
         case CHANNEL_TWO:   {
