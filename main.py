@@ -15,11 +15,6 @@ fun.process.argtypes = [ctypes.POINTER(
 
 samplerate, data = wavfile.read(infile)
 
-data[0][0] = 9
-data[0][1] = 123
-data[1][0] = 10
-data[1][1] = 456
-
 flat = data.flatten("A")
 # flat = (flat / (2**32)) * (2**15)
 flat = flat.astype(np.int16)
