@@ -2,32 +2,10 @@
 
 inline void biquad_filter(sample_t *s, biquad_t *b)
 {
-    // accumulator = b->state_error;
-
-    // accumulator += b->b[0] * (*s);
-    // accumulator += b->b[1] * b->x[1];
-    // accumulator += b->b[2] * b->x[2];
-    // accumulator += b->a[1] * b->y[1];
-    // accumulator += b->a[2] * b->y[2];
-
-    // accumulator = CLAMP(accumulator, ACC_MAX, ACC_MIN);
-
-    // b->state_error = accumulator & ACC_REM;
-
-    // b->x[2] = b->x[1];
-    // b->x[1] = *s;
-    // b->y[2] = b->y[1];
-    // *s = (accumulator >> q);
-    // b->y[1] = *s;
-
-
-
     sample_t out = b->b[0] * (*s) + b->d[0];
     b->d[0] = b->b[1] * (*s) + b->a[1] * out + b->d[1];
     b->d[1] = b->b[2] * (*s) + b->a[2] * out;
     *s = out;
-
-
 }
 
 // https://www.earlevel.com/main/2011/01/02/biquad-formulas/
