@@ -11,9 +11,9 @@ dynamic_compressor_t generate_compressor(
 {
     float glin = powf(10.0f, (gain / 20.0f)) - 1.0f;
 
-    double lnine = log10(9.0f);
-    float alphaA = expf(-lnine / (attack * samplerate));
-    float alphaR = expf(-lnine / (release * samplerate));
+    float lnine = log10f(9.0f);
+    float alphaA = expf(-lnine / (attack * (float)samplerate));
+    float alphaR = expf(-lnine / (release * (float)samplerate));
     float OMalphaA = (1 - alphaA);
     float OMalphaR = (1 - alphaR);
 

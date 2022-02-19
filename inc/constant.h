@@ -8,11 +8,11 @@
 #include <stdlib.h>
 
 #ifndef M_PI
-#define M_PI (3.1415926535897)
+#define M_PI (3.1415926535897f)
 #endif
 
 #ifndef M_SQRT2
-#define M_SQRT2 (1.41421356237)
+#define M_SQRT2 (1.41421356237f)
 #endif
 
 #define M_SQRT2_H (0.7071067812f)

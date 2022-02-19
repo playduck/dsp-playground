@@ -18,24 +18,24 @@ int16_t float_to_fixed(sample_t s)
 void initilize(uint16_t samplerate)
 {
     // crossover lowpass
-    filters[0] = generate_biquad(lowpass, 2000, 0.54119610f, 0, samplerate);
-    filters[1] = generate_biquad(lowpass, 2000, 1.3065630f, 0, samplerate);
+    filters[0] = generate_biquad(lowpass, 2000.0f, 0.54119610f, 0.0f, samplerate);
+    filters[1] = generate_biquad(lowpass, 2000.0f, 1.3065630f, 0.0f, samplerate);
     // crossover highpass
-    filters[2] = generate_biquad(highpass, 2000, 0.54119610f, 0, samplerate);
-    filters[3] = generate_biquad(highpass, 2000, 1.3065630f, 0, samplerate);
+    filters[2] = generate_biquad(highpass, 2000.0f, 0.54119610f, 0.0f, samplerate);
+    filters[3] = generate_biquad(highpass, 2000.0f, 1.3065630f, 0.0f, samplerate);
 
     // lowcut
-    filters[4] = generate_biquad(highpass, 40, 0.54119610f, 0, samplerate);
-    filters[5] = generate_biquad(highpass, 40, 1.3065630f, 0, samplerate);
+    filters[4] = generate_biquad(highpass, 40.0f, 0.54119610f, 0.0f, samplerate);
+    filters[5] = generate_biquad(highpass, 40.0f, 1.3065630f, 0.0f, samplerate);
 
-    delay[0] = generate_delay_line(40, 0.2, samplerate);
-    vb[0] = generate_virtual_bass(100, 220, -34.0, samplerate);
+    delay[0] = generate_delay_line(40.0f, 0.2f, samplerate);
+    vb[0] = generate_virtual_bass(100.0f, 220.0f, -34.0f, samplerate);
 
-    gate[0] = generate_gate(-40, 0.7, 0.8, 0.00001, 0, samplerate);
-    gate[1] = generate_gate(-40, 0.7, 0.8, 0.00001, 0, samplerate);
+    gate[0] = generate_gate(-40.0f, 0.7f, 0.8f, 0.00001f, 0.0f, samplerate);
+    gate[1] = generate_gate(-40.0f, 0.7f, 0.8f, 0.00001f, 0.0f, samplerate);
 
-    compressor[0] = generate_compressor(-8, 4, 3, 0.00001, 0.0001, -1, samplerate);
-    compressor[1] = generate_compressor(-8, 4, 3, 0.00001, 0.0001, -1, samplerate);
+    compressor[0] = generate_compressor(-8.0f, 4.0f, 3.0f, 0.00001f, 0.0001f, -1.0f, samplerate);
+    compressor[1] = generate_compressor(-8.0f, 4.0f, 3.0f, 0.00001f, 0.0001f, -1.0f, samplerate);
 
     vol[0] = generate_gain(-3.0f);
     vol[1] = generate_gain(-3.0f);
