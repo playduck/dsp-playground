@@ -25,7 +25,7 @@ Compile and run python script:
 
 - `make all; python main.py`
 
-This will call [`main.c:process()`](./src/main.c:7) with all samples in a stereo audio file.
+This will call [`main.c:process()`](./src/main.c#L7) with all samples in a stereo audio file.
 The test files, by default, should be `.wav`, 16 bit stereo. Located at `./data` and named `test{number}.wav`. (This can be changed in the python script.)
 This will generate and save a new, modified, version of the file with a `-f` suffix.
 
@@ -43,7 +43,7 @@ Currently available processes include:
 - gain
 - virtual / psycoacustic bass enhancement
 
-## TODo
+## TODO
 
 - more docs
 - noise shaping
