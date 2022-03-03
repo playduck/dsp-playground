@@ -9,35 +9,19 @@ gain_t generate_gain(float gain)
     return g;
 }
 
-void gain(sample_t *s, gain_t *g)
+inline void gain(sample_t *s, gain_t *g)
 {
-    float gDiff = g->current_gain_db - g->target_gain_db;
-
-    if (fabsf(gDiff) <= (2.0f * gain_step))
-    {
-        g->current_gain_db = g->target_gain_db;
-    }
-    else if (gDiff > 0.0f)
-    {
-        // ramp up
-        g->current_gain_db -= gain_step;
-    }
-    else if (gDiff < 0.0f)
-    {
-        // ramp down
-        g->current_gain_db += gain_step;
-    }
+    // single pole low pass, b = 0.0001, d = 1-b 0.9999 -> tau = -1/ln(d) = 9949 samples
+    // https://tomroelandts.com/articles/low-pass-single-pole-iir-filter
+    g->current_gain_db += 0.0001f * (g->target_gain_db - g->current_gain_db);
 
     float linGain = powf(10.0f, g->current_gain_db / 20.0f);
+    // float linGain = powFastLookup(g->current_gain_db / 20.0f, BASE10);
 
     *s = (*s) * linGain;
 }
 
-void set_target_range(float linear, gain_t *g)
+void set_target_range(float gain, gain_t *g)
 {
-    linear = CLAMP(linear, 0.00001f, 1.0f);
-
-    float gain = 20.0f * log10f(linear);
-
     g->target_gain_db = gain;
 }

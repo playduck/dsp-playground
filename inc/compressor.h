@@ -3,6 +3,7 @@
 #pragma once
 
 #include "constant.h"
+#include "pow.h"
 
 typedef struct
 {

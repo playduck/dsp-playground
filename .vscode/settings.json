@@ -3,5 +3,6 @@
         "*.spec": "python",
         "*.h": "c",
         "*.c": "c"
-    }
+    },
+    "cmake.configureOnOpen": true
 }

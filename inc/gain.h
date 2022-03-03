@@ -3,6 +3,7 @@
 #pragma once
 
 #include "constant.h"
+#include "pow.h"
 
 typedef struct
 {
@@ -10,10 +11,8 @@ typedef struct
     float target_gain_db;
 } gain_t;
 
-static float gain_step = 0.001f; // dB/s
-
 gain_t generate_gain(float gain);
 void gain(sample_t *s, gain_t *g);
-void set_target_range(float linear, gain_t *g);
+void set_target_range(float gain, gain_t *g);
 
 #endif

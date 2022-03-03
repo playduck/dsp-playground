@@ -3,7 +3,7 @@
 #pragma once
 
 #include "constant.h"
-
+#include "pow.h"
 #include "gain.h"
 #include "delay.h"
 #include "iir.h"

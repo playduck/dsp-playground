@@ -6,13 +6,14 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "pow.h"
 
 #ifndef M_PI
-#define M_PI (3.1415926535897f)
+#define M_PI (3.1415926535897)
 #endif
 
 #ifndef M_SQRT2
-#define M_SQRT2 (1.41421356237f)
+#define M_SQRT2 (1.41421356237)
 #endif
 
 #define M_SQRT2_H (0.7071067812f)
@@ -25,7 +26,6 @@
 #define MAX(a, b) (a > b ? a : b)
 #define MIN(a, b) (a < b ? a : b)
 
-#
 typedef float sample_t;
 
 #endif

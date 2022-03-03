@@ -11,9 +11,9 @@ dynamic_compressor_t generate_compressor(
 {
     float glin = powf(10.0f, (gain / 20.0f)) - 1.0f;
 
-    float lnine = log10f(9.0f);
-    float alphaA = expf(-lnine / (attack * (float)samplerate));
-    float alphaR = expf(-lnine / (release * (float)samplerate));
+    double lnine = log10(9.0f);
+    float alphaA = expf(-lnine / (attack * samplerate));
+    float alphaR = expf(-lnine / (release * samplerate));
     float OMalphaA = (1 - alphaA);
     float OMalphaR = (1 - alphaR);
 
@@ -47,7 +47,9 @@ void dynamic_compressor(sample_t *s, dynamic_compressor_t *c)
     }
     else if (((c->threshold - (c->width / 2)) <= xdb) && (xdb <= (c->threshold + (c->width / 2))))
     {
-        xsc = xdb + (((1 / c->ratio) - 1) * powf((xdb - c->threshold + (c->width / 2)), 2)) / (2 * c->width);
+        xsc = xdb + (((1 / c->ratio) - 1) * \
+        ( (xdb - c->threshold + (c->width / 2)) * (xdb - c->threshold + (c->width / 2)) )   ) / \
+        (2 * c->width);
     }
     else if (xdb > (c->threshold + (c->width / 2)))
     {
@@ -70,6 +72,7 @@ void dynamic_compressor(sample_t *s, dynamic_compressor_t *c)
     gs += c->gain;
 
     // apply
-    float glin = powf(10.0f, gs / 20.0f);
+    float glin = powFastLookup(gs / 20.0f, BASE10);
+    // float glin = powf(10.0f, gs / 20.0f);
     *s = (*s) * glin;
 }
