@@ -1,9 +1,5 @@
-set(COMPONENT_SRCDIRS
-  "src/pipeline.c"
-)
-
-set(COMPONENT_ADD_INCLUDEDIRS
-  "inc/"
-)
-
-register_component()
+idf_component_register(SRC_DIRS "src"
+                       INCLUDE_DIRS "inc"
+                       PRIV_INCLUDE_DIRS ""
+                       PRIV_REQUIRES "driver"
+                       REQUIRES "")
