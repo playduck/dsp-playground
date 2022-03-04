@@ -22,7 +22,7 @@
 #define ACC_MIN -0x20000000
 #define ACC_REM 0x00003FFF
 
-#define CLAMP(x, a, b) (x > a ? a : (x < b ? b : x))
+#define CLAMP(x, max, min) (x > max ? max : (x < min ? min : x))
 #define MAX(a, b) (a > b ? a : b)
 #define MIN(a, b) (a < b ? a : b)
 
