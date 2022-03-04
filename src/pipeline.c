@@ -31,7 +31,8 @@ void initilize(uint16_t samplerate)
     filters[5] = generate_biquad(highpass, 20, M_SQRT2_H, 0, samplerate);
     filters[6] = generate_biquad(peak, 100, 0.5, 3, samplerate);
     filters[7] = generate_biquad(peak, 50, 2, 1, samplerate);
-    filters[8] = generate_biquad(peak, 5000, M_SQRT2_H, 1, samplerate);
+    filters[8] = generate_biquad(peak, 3000, 0.5, 1, samplerate);
+    filters[9] = generate_biquad(highshelf, 8000, M_SQRT2_H, 1, samplerate);
 
     delay[0] = generate_delay_line(20, 0.2, samplerate);
 
@@ -54,12 +55,15 @@ inline void process_sample(int16_t *i16pSample1, int16_t *i16pSample2)
 
     mono = (sample1 + sample2) / 2.0f;
 
+    mono *= 0.7079457844f; //-3dB
+
     biquad_filter(&mono, filters + 4);
     biquad_filter(&mono, filters + 5);
 
     biquad_filter(&mono, filters + 6);
     biquad_filter(&mono, filters + 7);
-    // biquad_filter(&mono, filters + 8);
+    biquad_filter(&mono, filters + 8);
+    biquad_filter(&mono, filters + 9);
 
     gain(&mono, vol + 0);
     // virtual_bass(&mono, vb);
