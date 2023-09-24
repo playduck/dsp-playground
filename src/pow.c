@@ -1,7 +1,7 @@
 #include "pow.h"
 
 const uint8_t precision = 10;
-uint16_t pTable[1024]; // 2^10
+uint16_t pTable[1024] = {0}; // 2^10
 
 // https://www.hxa.name/articles/content/fast-pow-adjustable_hxa7241_2007.html
 const float _2p23 = 8388608.0f;
@@ -47,5 +47,8 @@ float powFastLookup(
                                              (23 - precision)]; /* F */
 
     /* convert bits to float */
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wuninitialized"
     return *(float *)(&it);
+    #pragma GCC diagnostic pop
 }

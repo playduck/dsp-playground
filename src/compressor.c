@@ -1,5 +1,8 @@
 #include "compressor.h"
 
+float gainComputedComp;
+float gainSmootedComp;
+
 dynamic_compressor_t generate_compressor(
     float threshold,
     float ratio,
@@ -55,24 +58,24 @@ void dynamic_compressor(sample_t *s, dynamic_compressor_t *c)
     {
         xsc = c->threshold + ((xdb - c->threshold) / c->ratio);
     }
-    gc = xsc - xdb;
+    gainComputedComp = xsc - xdb;
 
     // smoothing
-    if (gc <= gs)
+    if (gainComputedComp <= gainSmootedComp)
     {
-        gs = c->alphaA * gs + c->OMalphaA * gc;
+        gainSmootedComp = c->alphaA * gainSmootedComp + c->OMalphaA * gainComputedComp;
     }
-    else if (gc > gs)
+    else if (gainComputedComp > gainSmootedComp)
     {
-        gs = c->alphaR * gs + c->OMalphaR * gc;
+        gainSmootedComp = c->alphaR * gainSmootedComp + c->OMalphaR * gainComputedComp;
     }
 
     // makeup
-    c->gs = gs;
-    gs += c->gain;
+    c->gs = gainSmootedComp;
+    gainSmootedComp += c->gain;
 
     // apply
-    float glin = powFastLookup(gs / 20.0f, BASE10);
-    // float glin = powf(10.0f, gs / 20.0f);
+    float glin = powFastLookup(gainSmootedComp / 20.0f, BASE10);
+    // float glin = powf(10.0f, gainSmootedComp / 20.0f);
     *s = (*s) * glin;
 }

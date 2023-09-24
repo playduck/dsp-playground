@@ -1,5 +1,8 @@
 #include "gate.h"
 
+float gainComputedGate;
+float gainSmootedGate;
+
 dynamic_gate_t generate_gate(
     float thresshold,
     float attack,
@@ -36,34 +39,34 @@ inline void dynamic_gate(float *s, dynamic_gate_t *d)
 {
     if (fabsf(*s) < d->threshold)
     {
-        gc = 0.0f;
+        gainComputedGate = 0.0f;
     }
     else
     {
-        gc = 1.0f;
+        gainComputedGate = 1.0f;
     }
 
     d->Ca = d->Ca + 1;
-    if (d->Ca > d->hold && gc <= d->gs)
+    if (d->Ca > d->hold && gainComputedGate <= d->gs)
     {
         // attack
-        gs = d->alphaA * d->gs + d->OMalphaA * gc;
+        gainSmootedGate = d->alphaA * d->gs + d->OMalphaA * gainComputedGate;
     }
     else if (d->Ca <= d->hold)
     {
         // hold
-        gs = d->gs;
+        gainSmootedGate = d->gs;
     }
-    else if (gc > d->gs)
+    else if (gainComputedGate > d->gs)
     {
         // release
-        gs = d->alphaR * d->gs + d->OMalphaR * gc;
+        gainSmootedGate = d->alphaR * d->gs + d->OMalphaR * gainComputedGate;
         d->Ca = 0;
     }
 
     // makeup
-    d->gs = gs;
-    gs += d->gain;
+    d->gs = gainSmootedGate;
+    gainSmootedGate += d->gain;
 
-    *s = (*s) * gs;
+    *s = (*s) * gainSmootedGate;
 }

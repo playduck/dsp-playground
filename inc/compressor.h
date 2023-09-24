@@ -19,9 +19,6 @@ typedef struct
     float gs;
 } dynamic_compressor_t;
 
-float gc;
-float gs;
-
 extern int32_t accumulator;
 
 dynamic_compressor_t generate_compressor(

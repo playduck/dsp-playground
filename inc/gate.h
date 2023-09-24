@@ -18,9 +18,6 @@ typedef struct
     uint32_t Ca;
 } dynamic_gate_t;
 
-float gc;
-float gs;
-
 dynamic_gate_t generate_gate(
     float thresshold,
     float attack,
